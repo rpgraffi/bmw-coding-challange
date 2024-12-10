@@ -1,5 +1,5 @@
 import json
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 from pathlib import Path
 
 from models.parking_model import (
@@ -29,50 +29,35 @@ class ParkingService:
                 return spot.position
         return None
 
-    def get_business_hours(self, title: Optional[str] = None) -> Union[List[BusinessHours], Optional[BusinessHours]]:
+    def get_business_hours(self, title: Optional[str] = None) -> List[BusinessHours]:
         """Returns business hours for all spots or a specific parking spot if title is provided"""
         if title is None:
             return [spot.businessHours for spot in self._parking_spots]
-        for spot in self._parking_spots:
-            if spot.title == title:
-                return spot.businessHours
-        return None
+        return [spot.businessHours for spot in self._parking_spots if spot.title == title]
 
-    def get_contact_info(self, title: Optional[str] = None) -> Union[List[ContactInfo], Optional[ContactInfo]]:
+    def get_contact_info(self, title: Optional[str] = None) -> List[ContactInfo]:
         """Returns contact info for all spots or a specific parking spot if title is provided"""
         if title is None:
             return [spot.contactInfo for spot in self._parking_spots]
-        for spot in self._parking_spots:
-            if spot.title == title:
-                return spot.contactInfo
-        return None
+        return [spot.contactInfo for spot in self._parking_spots if spot.title == title]
 
-    def get_price_summary(self, title: Optional[str] = None) -> Union[List[PriceSummary], Optional[PriceSummary]]:
+    def get_price_summary(self, title: Optional[str] = None) -> List[PriceSummary]:
         """Returns price summary for all spots or a specific parking spot if title is provided"""
         if title is None:
             return [spot.priceSummary for spot in self._parking_spots]
-        for spot in self._parking_spots:
-            if spot.title == title:
-                return spot.priceSummary
-        return None
+        return [spot.priceSummary for spot in self._parking_spots if spot.title == title]
 
-    def get_parking_info(self, title: Optional[str] = None) -> Union[List[ParkingInfo], Optional[ParkingInfo]]:
+    def get_parking_info(self, title: Optional[str] = None) -> List[ParkingInfo]:
         """Returns parking info for all spots or a specific parking spot if title is provided"""
         if title is None:
             return [spot.parking for spot in self._parking_spots]
-        for spot in self._parking_spots:
-            if spot.title == title:
-                return spot.parking
-        return None
+        return [spot.parking for spot in self._parking_spots if spot.title == title]
 
-    def get_payment_methods(self, title: Optional[str] = None) -> List[str]:
+    def get_payment_methods(self, title: Optional[str] = None) -> List[List[str]]:
         """Returns payment methods for all spots or a specific parking spot if title is provided"""
         if title is None:
             return [spot.paymentMethods for spot in self._parking_spots]
-        for spot in self._parking_spots:
-            if spot.title == title:
-                return spot.paymentMethods
-        return []
+        return [spot.paymentMethods for spot in self._parking_spots if spot.title == title]
 
     def get_available_spots(self) -> List[Tuple[str, ParkingInfo]]:
         """Returns titles and parking info of spots that have free spaces"""
