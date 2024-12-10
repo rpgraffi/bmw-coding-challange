@@ -19,27 +19,3 @@ class SushiTools(BaseTools):
         }
         
         
-sushi_tools = [
-            {
-                "type": "function",
-                "function": {
-                    "name": "get_sushi_restaurants",
-                    "description": "Get sushi restaurants in Munich",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "The title of the sushi restaurant, e.g. Sasou"
-                            },
-                            "assistant_message": {
-                                "type": "string",
-                                "description": "Friendly message to display to user"
-                            }
-                        },
-                        "required": ["title", "assistant_message"],
-                        "additionalProperties": False
-                    }
-                }
-            }
-        ]

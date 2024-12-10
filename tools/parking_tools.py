@@ -1,230 +1,103 @@
-from typing import Dict, List
-from tools.base_tools import BaseTools
-from services.parking_service import (
-    get_all_parking_spots_names, get_position,
-    get_business_hours, get_contact_info, get_price_summary,
-    get_parking_info, get_payment_methods, get_available_spots,
-    find_spots_by_height, get_cheapest_spots, find_spots_with_disabled_access
-)
+from typing import List, Optional, Literal, Union
+from pydantic import BaseModel, Field
 
-class ParkingTools(BaseTools):
-    @property
-    def tools(self) -> List[Dict]:
-        return parking_tools
+class UserParkingIntent(BaseModel):
+    """Determines what parking information the user is looking for"""
+    query_type: Literal[
+        "list_all",          # get_all_parking_spots_names
+        "specific_spot",     # get_parking_spots with specific title
+        "cheapest",          # get_cheapest_spots
+        "nearby",            # get_position (with location context)
+        "availability",      # get_available_spots
+        "accessibility",     # find_spots_with_disabled_access
+        "height_check",      # find_spots_by_height
+        "business_hours",    # get_business_hours
+        "payment_info",      # get_payment_methods
+        "price_check",       # get_price_summary
+        "contact",           # get_contact_info
+        "detailed_info"      # get_parking_info
+    ] = Field(
+        description="Type of parking information the user is requesting"
+    )
+
+    # Optional parameters based on query type
+    specific_spot_name: Optional[str] = Field(
+        default=None,
+        description="Name of specific parking spot if user asks about one"
+    )
     
-    @property
-    def function_mapping(self) -> Dict:
-        return {
-            "get_all_parking_spots_names": get_all_parking_spots_names,
-            "get_position": get_position,
-            "get_business_hours": get_business_hours,
-            "get_contact_info": get_contact_info,
-            "get_price_summary": get_price_summary,
-            "get_parking_info": get_parking_info,
-            "get_payment_methods": get_payment_methods,
-            "get_available_spots": get_available_spots,
-            "find_spots_by_height": find_spots_by_height,
-            "get_cheapest_spots": get_cheapest_spots,
-            "find_spots_with_disabled_access": find_spots_with_disabled_access,
-        }
+    duration_hours: Optional[int] = Field(
+        default=None,
+        description="If user specified duration for parking, in hours"
+    )
+    
+    height_requirement: Optional[float] = Field(
+        default=None,
+        description="If user specified vehicle height requirement, in meters",
+        ge=1,
+        le=3
+    )
+    
+    location: Optional[str] = Field(
+        default=None,
+        description="If user specified a location"
+    )
+    
+    needs_disabled_access: Optional[bool] = Field(
+        default=None,
+        description="If user specifically asked about disabled parking"
+    )
+    
+    payment_method_preference: Optional[str] = Field(
+        default=None,
+        description="If user asked about specific payment methods (e.g., 'cash', 'credit card')"
+    )
 
+    response_detail: Literal["brief", "detailed"] = Field(
+        default="brief",
+        description="How detailed the response should be"
+    )
 
+# Example usage:
+"""
+User: "What's the cheapest parking spot for 3 hours?"
+Intent:
+{
+    "query_type": "cheapest",
+    "duration_hours": 3,
+    "response_detail": "brief"
+}
 
+User: "Is there parking near Marienplatz that can fit a van that's 2.5m tall?"
+Intent:
+{
+    "query_type": "height_check",
+    "location": "Marienplatz",
+    "height_requirement": 2.5,
+    "response_detail": "brief"
+}
 
+User: "Tell me everything about the City parking garage"
+Intent:
+{
+    "query_type": "detailed_info",
+    "specific_spot_name": "City",
+    "response_detail": "detailed"
+}
 
-parking_tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "get_parking_spots",
-            "description": "Get parking spots in Munich",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the parking spot",
-                    },
-                    "assistant_message": {
-                        "type": "string",
-                        "description": "Friendly message to display to user"
-                    }
-                },
-                "required": ["title", "assistant_message"],
-                "additionalProperties": False,
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_all_parking_spots_names",
-            "description": "Returns all parking spot names in Munich",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_position",
-            "description": "Get the position (coordinates) of a specific parking spot",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the parking spot"
-                    }
-                },
-                "required": ["title"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_business_hours",
-            "description": "Get the business hours of a specific parking spot",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the parking spot"
-                    }
-                },
-                "required": ["title"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_contact_info",
-            "description": "Get the contact information of a specific parking spot",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the parking spot"
-                    }
-                },
-                "required": ["title"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_price_summary",
-            "description": "Get the price summary of a specific parking spot",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the parking spot"
-                    }
-                },
-                "required": ["title"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_parking_info",
-            "description": "Get detailed parking information including spots and restrictions",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the parking spot"
-                    }
-                },
-                "required": ["title"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_payment_methods",
-            "description": "Get available payment methods for a specific parking spot",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "description": "The title of the parking spot"
-                    }
-                },
-                "required": ["title"],
-            },
-        }    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_available_spots",
-            "description": "Get parking spots that currently have free spaces",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "find_spots_by_height",
-            "description": "Find parking spots that can accommodate vehicles of a specific height",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "min_height": {
-                        "type": "number",
-                        "description": "Minimum height clearance required in meters"
-                    }
-                },
-                "required": ["min_height"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_cheapest_spots",
-            "description": "Get parking spots sorted by hourly rate",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "hours": {
-                        "type": "integer",
-                        "description": "Number of hours for price comparison",
-                        "default": 2
-                    }
-                },
-                "required": [],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "find_spots_with_disabled_access",
-            "description": "Find parking spots that have disabled parking spaces",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-            },
-        }
-    },
-]
+User: "Are there any available spots with disabled parking?"
+Intent:
+{
+    "query_type": "accessibility",
+    "needs_disabled_access": true,
+    "response_detail": "brief"
+}
+
+User: "What time does Marienplatz parking close?"
+Intent:
+{
+    "query_type": "business_hours",
+    "specific_spot_name": "Marienplatz",
+    "response_detail": "brief"
+}
+"""
