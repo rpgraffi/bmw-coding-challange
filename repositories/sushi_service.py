@@ -1,6 +1,6 @@
+import json
 from typing import List, Optional
 from pathlib import Path
-import json
 
 from models.sushi_model import (
     SushiRestaurant, Position, BusinessHours, Reviews,

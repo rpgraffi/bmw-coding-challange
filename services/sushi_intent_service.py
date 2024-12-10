@@ -1,12 +1,13 @@
-from typing import Any, Dict, List, Optional
+from pydantic import BaseModel
+from typing import Any, Dict
+
 from models.intent.sushi_intent import UserSushiIntent
 from repositories.sushi_service import SushiService
-from pydantic import BaseModel
-
+from services.intent_service import IntentService
 class SushiResponse(BaseModel):
     data: Dict[str, Any]
 
-class SushiIntentService:
+class SushiIntentService(IntentService):
     def __init__(self):
         self.sushi_service = SushiService()
 

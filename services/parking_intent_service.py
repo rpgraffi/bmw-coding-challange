@@ -1,13 +1,14 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
+from pydantic import BaseModel
+
 from models.intent.parking_intent import UserParkingIntent
 from repositories.parking_service import ParkingService
-import json
-from pydantic import BaseModel
+from services.intent_service import IntentService
 
 class ParkingResponse(BaseModel):
     data: Dict[str, Any]
 
-class ParkingIntentService:
+class ParkingIntentService(IntentService):
     def __init__(self):
         self.parking_service = ParkingService()
 
@@ -47,33 +48,33 @@ class ParkingIntentService:
         if "nearby" in intent.query_types:
             if intent.location:
                 data["nearby"] = self.parking_service.get_spots_near_location(intent.location)
-                
-        # Additional data based on context
+        
+        spot_name = None
         if intent.specific_spot_name:
             spot_name = intent.specific_spot_name
             
-            if "business_hours" in intent.query_types:
-                data["hours"] = self.parking_service.get_business_hours(spot_name)
-                
-            if "payment_info" in intent.query_types:
-                data["payment_methods"] = self.parking_service.get_payment_methods(spot_name)
-                
-            if "price_check" in intent.query_types:
-                data["price"] = self.parking_service.get_price_summary(spot_name)
-                
-            if "contact" in intent.query_types:
-                data["contact"] = self.parking_service.get_contact_info(spot_name)
-                
-            if "detailed_info" in intent.query_types:
-                # Aggregate all available information
-                data.update({
-                    "parking_info": self.parking_service.get_parking_info(spot_name),
-                    "hours": self.parking_service.get_business_hours(spot_name),
-                    "price": self.parking_service.get_price_summary(spot_name),
-                    "contact": self.parking_service.get_contact_info(spot_name),
-                    "payment_methods": self.parking_service.get_payment_methods(spot_name),
-                    "position": self.parking_service.get_position(spot_name)
-                })
+        if "business_hours" in intent.query_types:
+            data["hours"] = self.parking_service.get_business_hours(spot_name)
+            
+        if "payment_info" in intent.query_types:
+            data["payment_methods"] = self.parking_service.get_payment_methods(spot_name)
+            
+        if "price_check" in intent.query_types:
+            data["price"] = self.parking_service.get_price_summary(spot_name)
+            
+        if "contact" in intent.query_types:
+            data["contact"] = self.parking_service.get_contact_info(spot_name)
+            
+        if "detailed_info" in intent.query_types:
+            # Aggregate all available information
+            data.update({
+                "parking_info": self.parking_service.get_parking_info(spot_name),
+                "hours": self.parking_service.get_business_hours(spot_name),
+                "price": self.parking_service.get_price_summary(spot_name),
+                "contact": self.parking_service.get_contact_info(spot_name),
+                "payment_methods": self.parking_service.get_payment_methods(spot_name),
+                "position": self.parking_service.get_position(spot_name)
+            })
 
 
         return ParkingResponse(data=data)
