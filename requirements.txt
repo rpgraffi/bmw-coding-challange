@@ -2,3 +2,4 @@ python-dotenv
 langchain
 openai
 whisper
+instructor

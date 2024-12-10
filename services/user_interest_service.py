@@ -1,8 +1,9 @@
 from typing import List
-from enums.user_interest_enum import UserInterest
 
-from services.sushi_service import get_all_sushi_restaurants_names  
+from enums.user_interest_enum import UserInterestEnum
 from services.parking_service import get_all_parking_spots_names
+from services.sushi_service import get_all_sushi_restaurants_names
+
 
 def get_user_interest(user_interest: str) -> List[dict]:
     user_interest = user_interest.upper()
