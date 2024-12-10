@@ -11,9 +11,13 @@ user_interest_tools = [
                         "type": "string",
                         "enum": ["SUSHI", "PARKING", "BOTH"],
                         "description": "The user's interest, e.g. sushi, parking or both",
+                    },
+                    "assistant_message": {
+                        "type": "string",
+                        "description": "Friendly message to display to user"
                     }
                 },
-                "required": ["interest"],
+                "required": ["interest", "assistant_message"],
                 "additionalProperties": False,
             },
         },

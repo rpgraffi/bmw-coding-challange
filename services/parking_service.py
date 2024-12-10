@@ -4,15 +4,16 @@ from models.parking_model import (
     ParkingSpot, Position, BusinessHours, ContactInfo,
     PriceSummary, ParkingInfo, PriceStructured
 )
+from core.json_service import load_json_data
 
 def _load_parking_data() -> List[dict]:
-    with open('data/parking.json') as file:
-        return json.load(file)
+    """Load parking data with proper Unicode encoding"""
+    return load_json_data('data/parking.json')
 
 def get_all_parking_spots_names() -> List[dict]:
     """Returns all parking spot names"""
     parking_data = _load_parking_data()
-    return [{"parking": spot['title']} for spot in parking_data]
+    return [{"parking": [spot['title'] for spot in parking_data]}]
 
 def get_position(title: str) -> Optional[Position]:
     """Returns the position of a specific parking spot"""
@@ -109,7 +110,7 @@ def get_cheapest_spots(hours: int = 2) -> List[tuple[str, PriceSummary, PriceStr
         price_structured = PriceStructured(**spot['priceStructured'])
         price_info.append((spot['title'], price_summary, price_structured))
     
-    return sorted(price_info, key=get_hourly_rate)
+    return sorted(price_info, key=get_hourly_rate)[0]
 
 def find_spots_with_disabled_access() -> List[tuple[str, ParkingInfo]]:
     """Returns titles and parking info of spots that have disabled parking spaces"""

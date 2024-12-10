@@ -26,6 +26,9 @@ class MessagesService:
     def add_system_message(self, message):
         self.messages.append({"role": "system", "content": message})
         
+    def add_assistant_message(self, message):
+        self.messages.append({"role": "assistant", "content": message})
+        
     def add_user_message(self, message):
         self.messages.append({"role": "user", "content": message})
         

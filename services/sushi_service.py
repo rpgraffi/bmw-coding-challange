@@ -1,15 +1,14 @@
-import json
 from typing import List
 from models.sushi_model import Position, BusinessHours, Reviews, ContactInfo, PriceSummary
+from core.json_service import load_json_data
 
 def _load_sushi_data():
-    with open('data/sushi.json') as file:
-        return json.load(file)
+    return load_json_data('data/sushi.json')
     
 
 def get_all_sushi_restaurants_names() -> List[dict]:
     sushi_data = _load_sushi_data()
-    return [{"restaurants": restaurant['title']} for restaurant in sushi_data]
+    return [{"restaurants": [restaurant['title'] for restaurant in sushi_data]}]
 
 def get_position(title: str) -> Position:
     sushi_data = _load_sushi_data()
