@@ -1,20 +1,17 @@
 from typing import List
-
 from enums.user_interest_enum import UserInterestEnum
-from services.parking_service import get_all_parking_spots_names
-from services.sushi_service import get_all_sushi_restaurants_names
+from models.intent.parking_intent import UserParkingIntent
+from models.intent.sushi_intent import UserSushiIntent
 
 
-def get_user_interest(user_interest: str) -> List[dict]:
-    user_interest = user_interest.upper()
-    if user_interest == "SUSHI":
-        return get_all_sushi_restaurants_names()
-    elif user_interest == "PARKING":
-        return get_all_parking_spots_names()
+
+def get_user_interest(user_interest: UserInterestEnum) -> List[dict]:
+    if user_interest == UserInterestEnum.SUSHI:
+        return UserSushiIntent
+    elif user_interest == UserInterestEnum.PARKING:
+        return UserParkingIntent
     else:
-        return get_all_sushi_restaurants_names() + get_all_parking_spots_names()
-    
-    
+        return UserParkingIntent + UserSushiIntent
 
 
 

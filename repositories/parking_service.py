@@ -1,6 +1,6 @@
+import json
 from typing import List, Optional, Tuple
 from pathlib import Path
-import json
 
 from models.parking_model import (
     ParkingSpot, Position, BusinessHours, ContactInfo,

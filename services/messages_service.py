@@ -1,11 +1,16 @@
 import json
 
-from services.enum_encoder import EnumEncoder
+from pydantic import BaseModel
 
 
 class MessagesService:
     def __init__(self):
         self.messages = []
+        
+    def _prepare_message(self, data):
+        if isinstance(data, BaseModel):
+            return data.model_dump_json()
+        return (data)
         
     def get_messages(self) -> list[dict]:
         return self.messages
@@ -27,19 +32,20 @@ class MessagesService:
         self.messages.append({"role": "system", "content": message})
         
     def add_assistant_message(self, message):
-        self.messages.append({"role": "assistant", "content": message})
+        content = self._prepare_message(message)
+        self.messages.append({"role": "assistant", "content": content})
         
     def add_user_message(self, message):
         self.messages.append({"role": "user", "content": message})
         
     def add_function_message(self, function_name, function_arguments):
-        if not isinstance(function_arguments, str):
-            function_arguments = json.dumps(function_arguments, cls=EnumEncoder)
+        
+        content = self._prepare_message(function_arguments)
         
         self.messages.append({
             "role": "function",
             "name": function_name,
-            "content": function_arguments
+            "content": content
         })
         
     def add_function_messages(self, messages):
