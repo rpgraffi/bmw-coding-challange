@@ -2,14 +2,6 @@
 
 An AI-powered assistant that helps users find sushi restaurants and parking spots in Munich. The assistant uses GPT-3.5-turbo to understand user queries and provide relevant information from a mock database.
 
-## Android Jetpack Compose App
-Inspired by [HariAgus/TokenApp](https://github.com/HariAgus/TakonApp-Comppose/tree/master)
-<table>
-  <tr>
-    <td><img src="readme/bmw_sushiparker_01.png" width="300"/></td>
-    <td><img src="readme/bmw_sushiparker_02.png" width="300"/></td>
-  </tr>
-</table>
 
 ## Setup
 
@@ -80,3 +72,15 @@ The API will be available at `http://localhost:8000`
 - `src/services/`: Core business logic and data handling
 - `src/models/`: Pydantic models for type safety
 - `src/data/`: Mock database JSON files
+
+
+## Android Jetpack Compose App
+Additionaly, I created an Android Jetpack Compose App that uses the FastAPI server as an endpoint.
+Not in Project, but here is a screenshot:
+<table>
+  <tr>
+    <td><img src="readme/bmw_sushiparker_01.png" width="300"/></td>
+    <td><img src="readme/bmw_sushiparker_02.png" width="300"/></td>
+  </tr>
+</table>
+Inspired by [HariAgus/TokenApp](https://github.com/HariAgus/TakonApp-Comppose/tree/master)
