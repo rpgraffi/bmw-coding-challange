@@ -37,7 +37,7 @@ class SushiIntentService(IntentService):
             data["contact"] = self.data_provider.get_contact_info(spot_name)
                 
         if "nearby" in intent.query_types:
-            data["nearby"] = self.data_provider.get_position(spot_name)
+            data["nearby"] = self.data_provider.get_distance_info(spot_name)
             
         if intent.response_detail == "detailed":
             data["restaurants"] = self.data_provider.get_sushi_restaurants(spot_name)

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from src.models.domain.sushi_model import (
     SushiData, SushiRestaurant, Position, BusinessHours, Reviews,
-    ContactInfo, PriceSummary
+    ContactInfo, PriceSummary, DistanceInfo
 )
 from src.const.constants import SUSHI_PATH
 
@@ -39,6 +39,16 @@ class SushiDataProvider:
     def get_position(self, title: Optional[str] = None) -> List[SushiData[Position]]:
         """Returns the position of restaurants"""
         return self._get_data_for_restaurants(title, lambda r: r.position)
+
+    def get_distance_info(self, title: Optional[str] = None) -> List[SushiData[DistanceInfo]]:
+        """Returns the distance information of restaurants"""
+        return self._get_data_for_restaurants(
+            title,
+            lambda r: DistanceInfo(
+                distance_from_current_location=r.distance_from_current_location,
+                duration_from_current_location=r.duration_from_current_location
+            )
+        )
 
     def get_business_hours(self, title: Optional[str] = None) -> List[SushiData[BusinessHours]]:
         """Returns the business hours of restaurants"""

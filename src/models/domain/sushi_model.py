@@ -38,3 +38,9 @@ class SushiRestaurant(BaseModel):
     foodTypes: List[str]
     contactInfo: ContactInfo
     priceSummary: PriceSummary
+
+
+# Use case models
+class DistanceInfo(BaseModel):
+    distance_from_current_location: str
+    duration_from_current_location: Optional[str] = None
