@@ -3,6 +3,7 @@
 An AI-powered assistant that helps users find sushi restaurants and parking spots in Munich. The assistant uses GPT-3.5-turbo to understand user queries and provide relevant information from a mock database.
 
 ## Android Jetpack Compose App
+Inspired by [HariAgus/TokenApp](https://github.com/HariAgus/TakonApp-Comppose/tree/master)
 <table>
   <tr>
     <td><img src="readme/bmw_sushiparker_01.png" width="300"/></td>
