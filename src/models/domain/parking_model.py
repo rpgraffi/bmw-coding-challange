@@ -1,7 +1,11 @@
-from typing import List, Optional
+from typing import List, Optional, Generic, TypeVar
 from pydantic import BaseModel
 
-
+T = TypeVar('T')
+class ParkingData(BaseModel, Generic[T]):
+    title: str
+    data: T
+    
 class Position(BaseModel):
     lat: float
     lng: float
@@ -52,3 +56,5 @@ class ParkingSpot(BaseModel):
     priceStructured: PriceStructured
     parking: ParkingInfo
     availability: Optional[str] = None
+
+

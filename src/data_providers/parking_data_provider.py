@@ -1,23 +1,39 @@
 import json
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Callable, TypeVar
 from pathlib import Path
 
-from models.parking_model import (
+from models.domain.parking_model import (
     ParkingSpot, Position, BusinessHours, ContactInfo,
-    PriceSummary, ParkingInfo, PriceStructured
+    PriceSummary, ParkingInfo, PriceStructured, ParkingData
 )
+from const.constants import PARKING_PATH
 
-class ParkingService:
+T = TypeVar('T')
+
+class ParkingDataProvider:
     def __init__(self):
         self._parking_spots = self._load_parking_data()
 
     def _load_parking_data(self) -> List[ParkingSpot]:
         """Load parking data with proper model validation"""
-        json_path = Path("data/parking.json")
+        json_path = Path(PARKING_PATH)
         with open(json_path, encoding='utf-8') as f:
             data = json.load(f)
         return [ParkingSpot(**spot) for spot in data]
 
+
+    def _get_data_for_spots(self, 
+                           title: Optional[str], 
+                           data_getter: Callable[[ParkingSpot], T]
+                           ) -> List[ParkingData[T]]:
+        """Generic helper method to get data from parking spots"""
+        if title is None:
+            return [ParkingData(title=spot.title, data=data_getter(spot)) 
+                   for spot in self._parking_spots]
+        return [ParkingData(title=spot.title, data=data_getter(spot)) 
+                for spot in self._parking_spots if spot.title == title]
+        
+        
     def get_all_parking_spots_names(self) -> List[str]:
         """Returns all parking spot names"""
         return [spot.title for spot in self._parking_spots]
@@ -29,35 +45,26 @@ class ParkingService:
                 return spot.position
         return None
 
-    def get_business_hours(self, title: Optional[str] = None) -> List[BusinessHours]:
+
+    def get_business_hours(self, title: Optional[str] = None) -> List[ParkingData[BusinessHours]]:
         """Returns business hours for all spots or a specific parking spot if title is provided"""
-        if title is None:
-            return [spot.businessHours for spot in self._parking_spots]
-        return [spot.businessHours for spot in self._parking_spots if spot.title == title]
+        return self._get_data_for_spots(title, lambda spot: spot.businessHours)
 
-    def get_contact_info(self, title: Optional[str] = None) -> List[ContactInfo]:
+    def get_contact_info(self, title: Optional[str] = None) -> List[ParkingData[ContactInfo]]:
         """Returns contact info for all spots or a specific parking spot if title is provided"""
-        if title is None:
-            return [spot.contactInfo for spot in self._parking_spots]
-        return [spot.contactInfo for spot in self._parking_spots if spot.title == title]
+        return self._get_data_for_spots(title, lambda spot: spot.contactInfo)
 
-    def get_price_summary(self, title: Optional[str] = None) -> List[PriceSummary]:
+    def get_price_summary(self, title: Optional[str] = None) -> List[ParkingData[PriceSummary]]:
         """Returns price summary for all spots or a specific parking spot if title is provided"""
-        if title is None:
-            return [spot.priceSummary for spot in self._parking_spots]
-        return [spot.priceSummary for spot in self._parking_spots if spot.title == title]
+        return self._get_data_for_spots(title, lambda spot: spot.priceSummary)
 
-    def get_parking_info(self, title: Optional[str] = None) -> List[ParkingInfo]:
+    def get_parking_info(self, title: Optional[str] = None) -> List[ParkingData[ParkingInfo]]:
         """Returns parking info for all spots or a specific parking spot if title is provided"""
-        if title is None:
-            return [spot.parking for spot in self._parking_spots]
-        return [spot.parking for spot in self._parking_spots if spot.title == title]
+        return self._get_data_for_spots(title, lambda spot: spot.parking)
 
-    def get_payment_methods(self, title: Optional[str] = None) -> List[List[str]]:
+    def get_payment_methods(self, title: Optional[str] = None) -> List[ParkingData[List[str]]]:
         """Returns payment methods for all spots or a specific parking spot if title is provided"""
-        if title is None:
-            return [spot.paymentMethods for spot in self._parking_spots]
-        return [spot.paymentMethods for spot in self._parking_spots if spot.title == title]
+        return self._get_data_for_spots(title, lambda spot: spot.paymentMethods)
 
     def get_available_spots(self) -> List[Tuple[str, ParkingInfo]]:
         """Returns titles and parking info of spots that have free spaces"""
@@ -105,7 +112,7 @@ class ParkingService:
                 disabled_spots.append((spot.title, spot.parking))
         return disabled_spots
 
-    def get_spots_near_location(self, location: str) -> List[Tuple[str, Position, str]]:
+    def get_spots_near_location(self) -> List[Tuple[str, Position, str]]:
         """Returns titles, positions and distances of spots near a location"""
         # In a real application, this would use geocoding and actual distance calculation
         return [(spot.title, spot.position, spot.distance_from_current_location) 

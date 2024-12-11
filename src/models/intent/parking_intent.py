@@ -1,13 +1,13 @@
-from typing import List, Literal, Optional, Set
+from typing import Literal, Optional, Set
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from models.intent.assistant_model import AssistantModel
 
 
 class UserParkingIntent(AssistantModel):
     """Determines what parking information the user is looking for"""
-    query_types: List[Literal[
+    query_types: Set[Literal[
         "list_all",          # get_all_parking_spots_names
         "specific_spot",     # get_parking_spots with specific title
         "cheapest",          # get_cheapest_spots
@@ -19,7 +19,6 @@ class UserParkingIntent(AssistantModel):
         "payment_info",      # get_payment_methods
         "price_check",       # get_price_summary
         "contact",           # get_contact_info
-        "detailed_info"      # get_parking_info
     ]] = Field(
         description="Types of parking information the user is requesting. Can be multiple."
     )
@@ -59,5 +58,5 @@ class UserParkingIntent(AssistantModel):
 
     response_detail: Literal["brief", "detailed"] = Field(
         default="brief",
-        description="How detailed the response should be"
+        description="If the user request is very very complex, the response should be detailed"
     )

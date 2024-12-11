@@ -1,5 +1,10 @@
-from typing import List, Optional
+from typing import List, Optional, Generic, TypeVar
 from pydantic import BaseModel
+
+T = TypeVar('T')
+class SushiData(BaseModel, Generic[T]):
+    title: str
+    data: T
 
 class Position(BaseModel):
     lat: float
@@ -28,7 +33,7 @@ class SushiRestaurant(BaseModel):
     duration_from_current_location: Optional[str] = None
     address: str
     categories: List[str]
-    businessHours: BusinessHours
+    businessHours: Optional[BusinessHours] = None
     reviews: Optional[Reviews] = None
     foodTypes: List[str]
     contactInfo: ContactInfo
