@@ -1,7 +1,9 @@
 python-dotenv
 langchain
 openai
-whisper
 instructor
 pydantic
 fastapi
+setuptools
+uvicorn
+#openai-whisper

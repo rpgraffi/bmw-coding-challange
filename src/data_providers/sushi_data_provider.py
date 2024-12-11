@@ -2,11 +2,11 @@ import json
 from typing import List, Optional, TypeVar, Callable
 from pathlib import Path
 
-from models.domain.sushi_model import (
+from src.models.domain.sushi_model import (
     SushiData, SushiRestaurant, Position, BusinessHours, Reviews,
     ContactInfo, PriceSummary
 )
-from const.constants import SUSHI_PATH
+from src.const.constants import SUSHI_PATH
 
 T = TypeVar('T')
 

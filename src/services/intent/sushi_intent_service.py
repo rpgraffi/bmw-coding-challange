@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from typing import Any, Dict
 
-from services.core.intent_service import IntentService
-from data_providers.sushi_data_provider import SushiDataProvider
-from models.intent.sushi_intent import UserSushiIntent
+from src.services.core.intent_service import IntentService
+from src.data_providers import SushiDataProvider
+from src.models.intent.sushi_intent import UserSushiIntent
 
 class SushiResponse(BaseModel):
     data: Dict[str, Any]

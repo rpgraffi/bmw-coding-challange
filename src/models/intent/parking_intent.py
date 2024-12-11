@@ -1,11 +1,8 @@
 from typing import Literal, Optional, Set
-
-from pydantic import Field
-
-from models.intent.assistant_model import AssistantModel
+from pydantic import BaseModel, Field
 
 
-class UserParkingIntent(AssistantModel):
+class UserParkingIntent(BaseModel):
     """Determines what parking information the user is looking for"""
     query_types: Set[Literal[
         "list_all",          # get_all_parking_spots_names
@@ -20,7 +17,12 @@ class UserParkingIntent(AssistantModel):
         "price_check",       # get_price_summary
         "contact",           # get_contact_info
     ]] = Field(
-        description="Types of parking information the user is requesting. Can be multiple."
+        description="""Types of parking information the user is requesting. Can be multiple.
+        You can be generouse and add more query types if you think it is necessary.
+        If user mention any time add "business_hours" to the query_types.
+        If user want to talk to someone, add "contact" to the query_types.
+        If user want to know the price or costs, add "price_check" and "payment_info" to the query_types.
+        """
     )
 
     # Optional parameters based on query types
@@ -36,7 +38,7 @@ class UserParkingIntent(AssistantModel):
     
     height_requirement: Optional[float] = Field(
         default=None,
-        description="If user specified vehicle height requirement, in meters",
+        description="If user mention vehicle height/size",
         ge=1,
         le=3
     )
@@ -53,7 +55,7 @@ class UserParkingIntent(AssistantModel):
     
     payment_method_preference: Optional[str] = Field(
         default=None,
-        description="If user asked about specific payment methods (e.g., 'cash', 'credit card')"
+        description="If user asked about payment methods (e.g., 'cash', 'credit card')"
     )
 
     response_detail: Literal["brief", "detailed"] = Field(

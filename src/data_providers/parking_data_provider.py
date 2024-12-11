@@ -2,11 +2,11 @@ import json
 from typing import List, Optional, Tuple, Callable, TypeVar
 from pathlib import Path
 
-from models.domain.parking_model import (
+from src.models.domain.parking_model import (
     ParkingSpot, Position, BusinessHours, ContactInfo,
     PriceSummary, ParkingInfo, PriceStructured, ParkingData
 )
-from const.constants import PARKING_PATH
+from src.const.constants import PARKING_PATH
 
 T = TypeVar('T')
 
@@ -114,7 +114,6 @@ class ParkingDataProvider:
 
     def get_spots_near_location(self) -> List[Tuple[str, Position, str]]:
         """Returns titles, positions and distances of spots near a location"""
-        # In a real application, this would use geocoding and actual distance calculation
         return [(spot.title, spot.position, spot.distance_from_current_location) 
                 for spot in self._parking_spots 
                 if spot.distance_from_current_location]

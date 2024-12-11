@@ -1,9 +1,9 @@
 from typing import Any, Dict
 from pydantic import BaseModel
 
-from services.core.intent_service import IntentService
-from data_providers.parking_data_provider import ParkingDataProvider
-from models.intent.parking_intent import UserParkingIntent
+from src.services.core.intent_service import IntentService
+from src.data_providers import ParkingDataProvider
+from src.models.intent.parking_intent import UserParkingIntent
 
 class ParkingResponse(BaseModel):
     data: Dict[str, Any]

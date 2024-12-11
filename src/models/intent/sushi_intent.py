@@ -1,9 +1,8 @@
 from typing import Literal, Optional, Set
 from pydantic import BaseModel, Field
 
-from models.intent.assistant_model import AssistantModel
 
-class UserSushiIntent(AssistantModel):
+class UserSushiIntent(BaseModel):
     """Determines what sushi restaurant information the user is looking for"""
     query_types: Set[Literal[
         "list_all",          # get_all_sushi_restaurants_names
@@ -14,7 +13,12 @@ class UserSushiIntent(AssistantModel):
         "price_check",       # get_price_summary
         "contact"            # get_contact_info
     ]] = Field(
-        description="Types of sushi restaurant information the user is requesting. Can be multiple."
+        description="""Types of sushi restaurant information the user is requesting. Can be multiple.
+        You can be generouse and add more query types if you think it is necessary.
+        If user mentions any time add "business_hours" to the query_types.
+        If user want to talk to someone, add "contact" to the query_types.
+        If user want to know the price or costs, add "price_check" to the query_types.
+        """
     )
 
     specific_restaurant_name: Optional[str] = Field(
